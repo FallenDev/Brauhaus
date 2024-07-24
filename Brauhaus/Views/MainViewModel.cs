@@ -58,9 +58,16 @@ namespace Brauhaus.Views
                 var journal = JsonSerializer.Deserialize<Journals>(jsonContent)!;
                 _jsonObjects.Add(new Journals
                 {
-                    Id = journal.Id, Name = journal.Name, StartDate = journal.StartDate, 
-                    SGravity = journal.SGravity, RackOneDate = journal.RackOneDate, RackTwoDate = journal.RackTwoDate,
-                    FGravity = journal.FGravity, BGravity = journal.BGravity, BottleDate = journal.BottleDate, 
+                    Id = journal.Id, 
+                    Name = journal.Name, 
+                    AcidPct = journal.AcidPct, 
+                    StartDate = journal.StartDate, 
+                    SGravity = journal.SGravity, 
+                    RackOneDate = journal.RackOneDate, 
+                    RackTwoDate = journal.RackTwoDate,
+                    FGravity = journal.FGravity, 
+                    BGravity = journal.BGravity, 
+                    BottleDate = journal.BottleDate, 
                     Content = journal.Content
                 });
             }

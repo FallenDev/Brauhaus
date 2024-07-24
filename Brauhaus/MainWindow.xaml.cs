@@ -30,6 +30,7 @@ namespace Brauhaus
             {
                 Id = Random.Shared.Next(),
                 Name = MwName.Text,
+                AcidPct = MwAcidPct.Text,
                 StartDate = MwStartDate.DisplayDate,
                 SGravity = MwSg.Text,
                 RackOneDate = MwFirstRack.DisplayDate,
