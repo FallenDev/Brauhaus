@@ -39,7 +39,7 @@
                 </Grid>
             </mah:MetroTabItem>
             <mah:MetroTabItem Header="Brewhaus Log" Margin="21, 0, -24, 0">
-                <Grid>
+                <Grid DataContext="{Binding SelectedJournal, Mode=TwoWay}">
                     <!-- File operations buttons -->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Height="50" HorizontalAlignment="Left" Width="195" VerticalAlignment="Top" d:LayoutOverrides="Height">
                         <Button Content="Add" Click="AddJournalButton_Click" Margin="5, 2, 5, 2" Width="50"/>
@@ -50,41 +50,49 @@
                     <!-- List of JSON files -->
                     <ListView x:Name="JsonFileListView" Margin="5,60,0,0" 
                               SelectionMode="Single" DisplayMemberPath="DisplayName"
-                              HorizontalAlignment="Left" Width="123" Height="599" VerticalAlignment="Top" />
+                              HorizontalAlignment="Left" Width="123" Height="599" VerticalAlignment="Top" SelectionChanged="JsonFileListView_SelectionChanged" />
 
                     <!-- Content -->
                     <Label Content="Notes on Brew:" Margin="133,197,0,0" FontSize="16" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="124"/>
-                    <TextBox x:Name="MwContent" Margin="133,234,0,0"
-                             VerticalScrollBarVisibility="Auto" 
-                             HorizontalScrollBarVisibility="Auto" 
+                    <TextBox x:Name="MwContent" Margin="133,234,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                             Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              TextWrapping="Wrap" AcceptsReturn="True" HorizontalAlignment="Left" Width="769" Height="425" VerticalAlignment="Top" FontSize="18"/>
 
                     <!-- Dates -->
                     <Label Content="Start Date:" Margin="133,114,0,0" FontSize="16" Height="36" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="104" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                    <DatePicker x:Name="MwStartDate" Margin="242,114,0,0" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height"/>
+                    <DatePicker x:Name="MwStartDate" Margin="242,114,0,0" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height" 
+                                Text="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Label Content="First Rack:" Margin="406,114,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                    <DatePicker x:Name="MwFirstRack" Margin="491,114,0,0" FontSize="16" Height="35" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                    <DatePicker x:Name="MwFirstRack" Margin="491,114,0,0" FontSize="16" Height="35" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="Height" 
+                                Text="{Binding RackOneDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Label Content="Second Rack:" Margin="374,154,0,0" FontSize="16" Height="36" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="113" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height"/>
-                    <DatePicker x:Name="MwSecondRack" Margin="491,154,0,479" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129"/>
+                    <DatePicker x:Name="MwSecondRack" Margin="491,154,0,479" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129" 
+                                Text="{Binding RackTwoDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Label Content="Bottle Date:" Margin="667,154,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="103" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                    <DatePicker x:Name="MwBottleDate" Margin="775,154,0,480" FontSize="16" Height="35" HorizontalAlignment="Left" Width="127"/>
+                    <DatePicker x:Name="MwBottleDate" Margin="775,154,0,480" FontSize="16" Height="35" HorizontalAlignment="Left" Width="127" 
+                                Text="{Binding BottleDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Name -->
                     <Label Content="Brew:" Margin="238,15,0,0" FontSize="16" HorizontalAlignment="Left" Width="50" Height="30" VerticalAlignment="Top"/>
-                    <TextBox x:Name="MwName" TextWrapping="Wrap" Text="" Margin="292,15,470,624" FontSize="16" d:LayoutOverrides="HorizontalAlignment"/>
+                    <TextBox x:Name="MwName" TextWrapping="Wrap" Margin="292,15,470,624" FontSize="16" d:LayoutOverrides="HorizontalAlignment" 
+                             Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Gravity -->
                     <Label Content="SG" Margin="548,61,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="42"/>
-                    <TextBox x:Name="MwSg" TextWrapping="Wrap" Text="" Margin="595,60,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="127"/>
+                    <TextBox x:Name="MwSg" TextWrapping="Wrap" Margin="595,60,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="127"
+                             Text="{Binding SGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="FG" Margin="727,61,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="43"/>
-                    <TextBox x:Name="MwFg" TextWrapping="Wrap" Text="" Margin="775,60,0,0" FontSize="16" Height="36" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="127"/>
+                    <TextBox x:Name="MwFg" TextWrapping="Wrap" Margin="775,60,0,0" FontSize="16" Height="36" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="127"
+                             Text="{Binding FGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="Back-Sweeten:" Margin="658,113,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="112" d:LayoutOverrides="Height"/>
-                    <TextBox x:Name="MwBg" TextWrapping="Wrap" Text="" Margin="775,113,0,0" FontSize="16" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127" d:LayoutOverrides="Height"/>
+                    <TextBox x:Name="MwBg" TextWrapping="Wrap" Margin="775,113,0,0" FontSize="16" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127" d:LayoutOverrides="Height"
+                             Text="{Binding BGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="Acid %:" Margin="521,12,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="69" d:LayoutOverrides="Height"/>
-                    <TextBox x:Name="MwAcidPct" TextWrapping="Wrap" Text="" Margin="595,12,0,0" FontSize="16" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127" d:LayoutOverrides="Height"/>
+                    <TextBox x:Name="MwAcidPct" TextWrapping="Wrap" Margin="595,12,0,0" FontSize="16" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127" d:LayoutOverrides="Height"
+                             Text="{Binding AcidPct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </mah:MetroTabItem>
         </TabControl>

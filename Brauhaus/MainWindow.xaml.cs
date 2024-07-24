@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Brauhaus.Models;
+using Brauhaus.Views;
 
 namespace Brauhaus
 {
@@ -13,51 +14,16 @@ namespace Brauhaus
     /// </summary>
     public partial class MainWindow
     {
-        private ObservableCollection<Journals> _jsonObjects;
+        private MainViewModel _viewModel;
 
         public MainWindow()
         {
             InitializeComponent();
-            _jsonObjects = [];
-            JsonFileListView.ItemsSource = _jsonObjects;
-            LoadJsonFiles();
+            _viewModel = new MainViewModel();
+            DataContext = _viewModel;
+            JsonFileListView.ItemsSource = _viewModel.JsonObjects;
         }
-
-        private void LoadJsonFiles()
-        {
-            var jsonDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}\\Data";
-            var journalsDir = $"{jsonDirectory}\\Journals";
-            var meadRecipes = $"{jsonDirectory}\\Mead";
-            var wineRecipes = $"{jsonDirectory}\\Wine";
-
-            CheckDirectoriesAndCreate(jsonDirectory);
-            CheckDirectoriesAndCreate(journalsDir);
-            CheckDirectoriesAndCreate(meadRecipes);
-            CheckDirectoriesAndCreate(wineRecipes);
-
-            foreach (var file in Directory.GetFiles(journalsDir, "*.json"))
-            {
-                var jsonContent = File.ReadAllText(file);
-                if (jsonContent.Length == 0) continue;
-                var journal = JsonSerializer.Deserialize<Journals>(jsonContent)!;
-                _jsonObjects.Add(new Journals
-                {
-                    Id = journal.Id, Name = journal.Name, StartDate = journal.StartDate, 
-                    SGravity = journal.SGravity, RackOneDate = journal.RackOneDate, RackTwoDate = journal.RackTwoDate,
-                    FGravity = journal.FGravity, BGravity = journal.BGravity, BottleDate = journal.BottleDate, 
-                    Content = journal.Content
-                });
-            }
-
-            // Create logic for mead and wine recipes
-        }
-
-        private static void CheckDirectoriesAndCreate(string directory)
-        {
-            if (Directory.Exists(directory)) return;
-            Directory.CreateDirectory(directory);
-        }
-
+        
         private void AddJournalButton_Click(object sender, RoutedEventArgs e)
         {
             var newJournal = new Journals
@@ -74,22 +40,28 @@ namespace Brauhaus
                 Content = MwContent.Text
             };
 
-            _jsonObjects.Add(newJournal);
+            _viewModel.JsonObjects.Add(newJournal);
 
             SaveJsonToFile("Journals", newJournal, newJournal.Id);
         }
 
         private void EditSaveJournalButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_jsonObjects.Count == 0) return;
+            if (_viewModel.JsonObjects.Count == 0)
+            {
+                AddJournalButton_Click(sender, e);
+                return;
+            }
+
             var id = GetSelectedJournalId();
-            var journal = _jsonObjects.FirstOrDefault(j => j.Id == id);
+            var journal = _viewModel.JsonObjects.FirstOrDefault(j => j.Id == id);
 
             if (journal == null) return;
             var newJournal = new Journals
             {
                 Id = journal.Id,
                 Name = MwName.Text,
+                AcidPct = MwAcidPct.Text,
                 StartDate = MwStartDate.DisplayDate,
                 SGravity = MwSg.Text,
                 RackOneDate = MwFirstRack.DisplayDate,
@@ -106,7 +78,7 @@ namespace Brauhaus
         private static void SaveJsonToFile(string directory, object obj, int name)
         {
             var jsonDir = $"{AppDomain.CurrentDomain.BaseDirectory}\\Data\\{directory}";
-            CheckDirectoriesAndCreate(jsonDir);
+            MainViewModel.CheckDirectoriesAndCreate(jsonDir);
 
             var jsonFile = $"{jsonDir}\\{name}.json";
             var content = JsonSerializer.Serialize(obj);
@@ -115,13 +87,13 @@ namespace Brauhaus
 
         private void DeleteJournalButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_jsonObjects.Count == 0) return;
+            if (_viewModel.JsonObjects.Count == 0) return;
             var id = GetSelectedJournalId();
-            var journal = _jsonObjects.FirstOrDefault(j => j.Id == id);
+            var journal = _viewModel.JsonObjects.FirstOrDefault(j => j.Id == id);
             var location = $"{AppDomain.CurrentDomain.BaseDirectory}\\Data\\Journals\\{id}.json";
             if (journal == null) return;
             
-            _jsonObjects.Remove(journal);
+            _viewModel.JsonObjects.Remove(journal);
 
             if (File.Exists(location))
                 File.Delete(location);
@@ -147,6 +119,12 @@ namespace Brauhaus
             }
 
             return -1;
+        }
+
+        private void JsonFileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((sender as ListView)?.SelectedItem is not Journals selectedJournal) return;
+            _viewModel.SelectedJournal = selectedJournal;
         }
     }
 }

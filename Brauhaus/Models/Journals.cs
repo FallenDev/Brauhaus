@@ -11,6 +11,7 @@ public class Journals
     public string FGravity { get; set; }
     public string BGravity { get; set; }
     public DateTime BottleDate { get; set; }
+    public string AcidPct { get; set; }
     public string Content { get; set; }
     public string DisplayName => $"{Name} {StartDate:MM-dd-yyyy}";
 }
