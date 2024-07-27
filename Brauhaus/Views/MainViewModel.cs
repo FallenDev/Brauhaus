@@ -12,7 +12,9 @@ public class MainViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<Journals> _jsonObjects;
+    private ObservableCollection<MRecipes> _mRecipes;
     private Journals _selectedJournal;
+    private MRecipes _selectedMRecipe;
     public static string BrauKey = "";
 
     public ObservableCollection<Journals> JsonObjects
@@ -22,6 +24,16 @@ public class MainViewModel : INotifyPropertyChanged
         {
             _jsonObjects = value;
             OnPropertyChanged(nameof(JsonObjects));
+        }
+    }
+
+    public ObservableCollection<MRecipes> MRecipes
+    {
+        get => _mRecipes;
+        set
+        {
+            _mRecipes = value;
+            OnPropertyChanged(nameof(MRecipes));
         }
     }
 
@@ -35,9 +47,20 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public MRecipes SelectedMRecipe
+    {
+        get => _selectedMRecipe;
+        set
+        {
+            _selectedMRecipe = value;
+            OnPropertyChanged(nameof(SelectedMRecipe));
+        }
+    }
+
     public MainViewModel()
     {
         _jsonObjects = [];
+        _mRecipes = [];
         LoadJsonFiles();
     }
 
@@ -54,32 +77,67 @@ public class MainViewModel : INotifyPropertyChanged
         CheckDirectoriesAndCreate(wineRecipes);
         BrauKey = CheckGuidFileAndCreate();
 
-        foreach (var file in Directory.GetFiles(journalsDir, "*.json"))
+        try
         {
-            var jsonContent = File.ReadAllText(file);
-            if (jsonContent.Length == 0) continue;
-            var decryptedContent = EncryptionHelper.DecryptString(jsonContent, BrauKey);
-            var journal = JsonSerializer.Deserialize<Journals>(decryptedContent)!;
-
-            _jsonObjects.Add(new Journals
+            foreach (var file in Directory.GetFiles(journalsDir, "*.json"))
             {
-                Id = journal.Id,
-                Name = journal.Name,
-                BrewSize = journal.BrewSize,
-                AcidPct = journal.AcidPct,
-                Filtered = journal.Filtered,
-                StartDate = journal.StartDate,
-                SGravity = journal.SGravity,
-                RackOneDate = journal.RackOneDate,
-                RackTwoDate = journal.RackTwoDate,
-                FGravity = journal.FGravity,
-                BGravity = journal.BGravity,
-                BottleDate = journal.BottleDate,
-                Content = journal.Content
-            });
+                var jsonContent = File.ReadAllText(file);
+                if (jsonContent.Length == 0) continue;
+                var decryptedContent = EncryptionHelper.DecryptString(jsonContent, BrauKey);
+                var journal = JsonSerializer.Deserialize<Journals>(decryptedContent)!;
+
+                _jsonObjects.Add(new Journals
+                {
+                    Id = journal.Id,
+                    Name = journal.Name,
+                    BrewSize = journal.BrewSize,
+                    AcidPct = journal.AcidPct,
+                    Filtered = journal.Filtered,
+                    StartDate = journal.StartDate,
+                    SGravity = journal.SGravity,
+                    RackOneDate = journal.RackOneDate ?? null,
+                    RackTwoDate = journal.RackTwoDate ?? null,
+                    FGravity = journal.FGravity,
+                    BGravity = journal.BGravity,
+                    BottleDate = journal.BottleDate ?? null,
+                    Content = journal.Content
+                });
+            }
+        }
+        catch
+        {
+            // Ignored
         }
 
-        // Create logic for mead and wine recipes
+        try
+        {
+            foreach (var file in Directory.GetFiles(meadRecipes, "*.json"))
+            {
+                var jsonContent = File.ReadAllText(file);
+                if (jsonContent.Length == 0) continue;
+                var mead = JsonSerializer.Deserialize<MRecipes>(jsonContent)!;
+
+                _mRecipes.Add(new MRecipes
+                {
+                    Name = mead.Name,
+                    HoneyType = mead.HoneyType,
+                    HoneyAmount = mead.HoneyAmount,
+                    Hops = mead.Hops,
+                    Herbs = mead.Herbs,
+                    Tannins = mead.Tannins,
+                    Yeast = mead.Yeast,
+                    Stabilizer = mead.Stabilizer,
+                    Nutrients = mead.Nutrients,
+                    Additives = mead.Additives,
+                    AcidPct = mead.AcidPct,
+                    Instructions = mead.Instructions
+                });
+            }
+        }
+        catch
+        {
+            // Ignored
+        }
     }
 
     internal static void CheckDirectoriesAndCreate(string directory)

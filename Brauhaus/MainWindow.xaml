@@ -21,12 +21,14 @@
                 </Grid>
             </mah:MetroTabItem>
             <mah:MetroTabItem Header="Mead Recipes" Margin="7, 0, -8, 0">
-                <Grid>
-                    <Image Source="Images/blacklogo.png" Stretch="Uniform" >
-                        <Image.OpacityMask>
-                            <SolidColorBrush Color="#FFD4CDCD" Opacity="0.4"/>
-                        </Image.OpacityMask>
-                    </Image>
+                <Grid DataContext="{Binding SelectedMead, Mode=TwoWay}">
+
+                    <ListView x:Name="MRecipesListView" Margin="5,60,0,0" 
+                        SelectionMode="Single" DisplayMemberPath="Name"
+                        HorizontalAlignment="Left" Width="176" Height="599" VerticalAlignment="Top" SelectionChanged="MRecipeListView_SelectionChanged" />
+                    <TextBox x:Name="MrInstructions" Margin="195,234,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                        Text="{Binding Instructions, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                        TextWrapping="Wrap" AcceptsReturn="True" HorizontalAlignment="Left" Width="707" Height="425" VerticalAlignment="Top" FontSize="18" ToolTip="Recipe Instructions" TabIndex="2"/>
                 </Grid>
             </mah:MetroTabItem>
             <mah:MetroTabItem Header="Wine Recipes" Margin="14, 0, -16, 0">
@@ -42,7 +44,7 @@
                 <Grid DataContext="{Binding SelectedJournal, Mode=TwoWay}">
                     <!-- File operations buttons -->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Height="50" HorizontalAlignment="Left" Width="195" VerticalAlignment="Top" d:LayoutOverrides="Height">
-                        <Button Content="Add" Click="AddJournalButton_Click" Margin="5, 2, 5, 2" Width="50"/>
+                        <Button Content="Add" Click="AddJournalButton_Click" Margin="5, 2, 5, 2" Width="50" TabIndex="7"/>
                         <Button Content="Save" Click="EditSaveJournalButton_Click" Margin="5, 2, 5, 2" Width="50"/>
                         <Button Content="Delete" Click="DeleteJournalButton_Click" Margin="5, 2, 5, 2" Width="60"/>
                     </StackPanel>
@@ -50,30 +52,30 @@
                     <!-- List of JSON files -->
                     <ListView x:Name="JsonFileListView" Margin="5,60,0,0" 
                               SelectionMode="Single" DisplayMemberPath="DisplayName"
-                              HorizontalAlignment="Left" Width="123" Height="599" VerticalAlignment="Top" SelectionChanged="JsonFileListView_SelectionChanged" />
+                              HorizontalAlignment="Left" Width="176" Height="599" VerticalAlignment="Top" SelectionChanged="JsonFileListView_SelectionChanged" />
 
                     <!-- Content -->
-                    <Label Content="Notes on Brew:" Margin="133,197,0,0" FontSize="16" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="124"/>
-                    <TextBox x:Name="MwContent" Margin="133,234,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                    <Label Content="Notes on Brew:" Margin="195,197,0,0" FontSize="16" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="124"/>
+                    <TextBox x:Name="MwContent" Margin="195,234,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
                              Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             TextWrapping="Wrap" AcceptsReturn="True" HorizontalAlignment="Left" Width="769" Height="425" VerticalAlignment="Top" FontSize="18" ToolTip="Notes on additives, brewing changes" TabIndex="10"/>
+                             TextWrapping="Wrap" AcceptsReturn="True" HorizontalAlignment="Left" Width="707" Height="425" VerticalAlignment="Top" FontSize="18" ToolTip="Notes on additives, brewing changes" TabIndex="6"/>
 
                     <!-- Dates -->
-                    <Label Content="Start Date:" Margin="133,114,0,0" FontSize="16" Height="36" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="104" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                    <DatePicker x:Name="MwStartDate" Margin="242,114,0,0" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height" 
-                                Text="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="4"/>
+                    <Label Content="Brewing Date:" Margin="238,101,0,0" FontSize="16" Height="36" HorizontalAlignment="Left" Width="104" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                    <DatePicker x:Name="MwStartDate" Margin="238,136,0,0" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height" 
+                                Text="{Binding StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="5" Background="#FF484040"/>
 
                     <Label Content="First Rack:" Margin="406,114,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
                     <DatePicker x:Name="MwFirstRack" Margin="491,114,0,0" FontSize="16" Height="35" HorizontalAlignment="Left" Width="129" VerticalAlignment="Top" d:LayoutOverrides="Height" 
-                                Text="{Binding RackOneDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="6"/>
+                                Text="{Binding RackOneDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="10"/>
 
                     <Label Content="Second Rack:" Margin="374,154,0,0" FontSize="16" Height="36" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="113" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height"/>
                     <DatePicker x:Name="MwSecondRack" Margin="491,154,0,479" FontSize="16" Height="36" HorizontalAlignment="Left" Width="129" 
-                                Text="{Binding RackTwoDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="7"/>
+                                Text="{Binding RackTwoDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="11"/>
 
                     <Label Content="Bottle Date:" Margin="667,154,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="103" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
                     <DatePicker x:Name="MwBottleDate" Margin="775,154,0,480" FontSize="16" Height="35" HorizontalAlignment="Left" Width="127" 
-                                Text="{Binding BottleDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="9"/>
+                                Text="{Binding BottleDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="13"/>
 
                     <!-- Name -->
                     <Label Content="Brew:" Margin="238,15,0,0" FontSize="16" HorizontalAlignment="Left" Width="50" Height="30" VerticalAlignment="Top"/>
@@ -83,13 +85,13 @@
                     <!-- Gravity -->
                     <Label Content="SG" Margin="548,61,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="42"/>
                     <TextBox x:Name="MwSg" TextWrapping="Wrap" Margin="595,60,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="127"
-                             Text="{Binding SGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Brix 1.000" TabIndex="3"/>
+                             Text="{Binding SGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Brix 1.000" TabIndex="4"/>
                     <Label Content="FG" Margin="727,61,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="43"/>
                     <TextBox x:Name="MwFg" TextWrapping="Wrap" Margin="775,60,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="127"
-                             Text="{Binding FGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Brix 1.000" TabIndex="5"/>
+                             Text="{Binding FGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Brix 1.000" TabIndex="9"/>
                     <Label Content="Back-Sweeten:" Margin="658,113,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="112" d:LayoutOverrides="Height"/>
                     <TextBox x:Name="MwBg" TextWrapping="Wrap" Margin="775,113,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127" d:LayoutOverrides="Height"
-                             Text="{Binding BGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Brix 1.000" TabIndex="8"/>
+                             Text="{Binding BGravity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Brix 1.000" TabIndex="12"/>
 
                     <!-- Additions -->
                     <Label Content="Acid %" Margin="521,12,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="69" d:LayoutOverrides="Height"/>
@@ -97,12 +99,12 @@
                              Text="{Binding AcidPct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Whole #" TabIndex="2"/>
                     <Label Content="Filter Microns:" Margin="264,61,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="108" d:LayoutOverrides="HorizontalAlignment, Height"/>
                     <TextBox x:Name="MwFilter" TextWrapping="Wrap" Margin="377,60,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" HorizontalAlignment="Left" Width="127"
-                        Text="{Binding Filtered, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Filter Microns" TabIndex="2" d:LayoutOverrides="Height"/>
+                        Text="{Binding Filtered, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Filter Microns" TabIndex="8" d:LayoutOverrides="Height"/>
                     <Label Content="Brew Size:" Margin="727,12,0,0" FontSize="16" Height="35" HorizontalContentAlignment="Right" VerticalAlignment="Top" HorizontalAlignment="Left" Width="80" d:LayoutOverrides="Height"/>
-                    
+
                     <!-- Brew Sizing -->
-                    <TextBox x:Name="MwBrewSize" TextWrapping="Wrap" Margin="807,12,0,0" FontSize="16" Height="36" PreviewTextInput="NumericPreviewTextInput" VerticalAlignment="Top" HorizontalAlignment="Left" Width="95"
-                        Text="{Binding BrewSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Enter Whole #" TabIndex="2" d:LayoutOverrides="Height"/>
+                    <TextBox x:Name="MwBrewSize" TextWrapping="Wrap" Margin="807,12,0,0" FontSize="16" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="95"
+                        Text="{Binding BrewSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="BBLs or gals" TabIndex="3" d:LayoutOverrides="Height"/>
                 </Grid>
             </mah:MetroTabItem>
         </TabControl>

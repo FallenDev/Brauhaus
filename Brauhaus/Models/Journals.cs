@@ -6,11 +6,11 @@ public class Journals
     public string Name { get; set; }
     public DateTime StartDate { get; set; }
     public string SGravity { get; set; }
-    public DateTime RackOneDate { get; set; } 
-    public DateTime RackTwoDate { get; set; }
+    public DateTime? RackOneDate { get; set; } 
+    public DateTime? RackTwoDate { get; set; }
     public string FGravity { get; set; }
     public string BGravity { get; set; }
-    public DateTime BottleDate { get; set; }
+    public DateTime? BottleDate { get; set; }
     public string AcidPct { get; set; }
     public string Filtered { get; set; }
     public string Content { get; set; }

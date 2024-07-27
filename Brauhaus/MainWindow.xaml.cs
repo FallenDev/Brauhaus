@@ -22,6 +22,7 @@ public partial class MainWindow
         _viewModel = new MainViewModel();
         DataContext = _viewModel;
         JsonFileListView.ItemsSource = _viewModel.JsonObjects;
+        MRecipesListView.ItemsSource = _viewModel.MRecipes;
     }
         
     private void AddJournalButton_Click(object sender, RoutedEventArgs e)
@@ -134,5 +135,21 @@ public partial class MainWindow
     {
         if ((sender as ListView)?.SelectedItem is not Journals selectedJournal) return;
         _viewModel.SelectedJournal = selectedJournal;
+    }
+
+    private string GetSelectedMRecipe()
+    {
+        if (MRecipesListView.SelectedItem is MRecipes selectedRecipe)
+        {
+            return selectedRecipe.Name;
+        }
+
+        return "";
+    }
+
+    private void MRecipeListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if ((sender as ListView)?.SelectedItem is not MRecipes selectedRecipe) return;
+        _viewModel.SelectedMRecipe = selectedRecipe;
     }
 }
